@@ -1,0 +1,47 @@
+# E.V.E. — universal cron entries (vendor layer).
+# Installed by install.sh as the `eve` user's crontab. Customer-layer cron
+# entries (dated reminders, customer-specific overrides) are added separately
+# by the dashboard.
+#
+# All paths use ~/.local/eve-tools/ which is the canonical install location.
+# Timezone follows the host's local TZ (typically Pacific on L&R's box;
+# customers may set their own — adjust below if needed).
+
+SHELL=/bin/bash
+PATH=/home/eve/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# News ingestion + relevance scoring — 7am + 1pm.
+# Chained so scoring always runs immediately after fetch.
+0 7 * * * /home/eve/.local/eve-tools/docs-venv/bin/python /home/eve/.local/eve-tools/news_fetch.py >> /home/eve/.local/eve-tools/cron-news.log 2>&1 && /home/eve/.local/eve-tools/docs-venv/bin/python /home/eve/.local/eve-tools/relevance_score.py >> /home/eve/.local/eve-tools/cron-news.log 2>&1
+0 13 * * * /home/eve/.local/eve-tools/docs-venv/bin/python /home/eve/.local/eve-tools/news_fetch.py >> /home/eve/.local/eve-tools/cron-news.log 2>&1 && /home/eve/.local/eve-tools/docs-venv/bin/python /home/eve/.local/eve-tools/relevance_score.py >> /home/eve/.local/eve-tools/cron-news.log 2>&1
+
+# Daily curator at 3:15am (before news fetch + before backup).
+15 3 * * * /home/eve/.local/eve-tools/docs-venv/bin/python /home/eve/.local/eve-tools/pulse_curator.py >> /home/eve/.local/eve-tools/cron-curator.log 2>&1
+
+# BTS deal-sourcing sweep at 8am (after news fetch + scoring).
+0 8 * * * /home/eve/.local/eve-tools/docs-venv/bin/python /home/eve/.local/eve-tools/bts_sweep.py >> /home/eve/.local/eve-tools/cron-bts.log 2>&1
+
+# Nightly encrypted backup to Drive — 30-day rolling.
+30 3 * * * /home/eve/.local/eve-tools/docs-venv/bin/python /home/eve/.local/eve-tools/backup_to_drive.py >> /home/eve/.local/eve-tools/cron-backup.log 2>&1
+
+# Encrypted USB local backup — 5 min after Drive backup to avoid I/O contention.
+# Self-guards: no-ops with a log line until keyfile + mount + sudoers exist.
+35 3 * * * /usr/bin/python3 /home/eve/.local/eve-tools/backup_to_usb.py >> /home/eve/.local/eve-tools/cron-backup-usb.log 2>&1
+
+# Daily brief — 7am + 2pm. Host TZ-relative.
+0 7,14 * * * /usr/bin/python3 /home/eve/.local/eve-tools/daily_brief.py >> /home/eve/.local/eve-tools/cron-brief.log 2>&1
+
+# Plaud ingest — hourly during waking hours (6am - 10pm).
+# Runs at :30 to dodge the daily-brief :00 windows.
+30 6-22 * * * /usr/bin/python3 /home/eve/.local/eve-tools/plaud_ingest.py --model small >> /home/eve/.local/eve-tools/cron-plaud.log 2>&1
+
+# ─── Outreach (paused by default) ────────────────────────────────────────────
+# Outreach loop is shipped paused. Customer (or vendor on customer's behalf)
+# uncomments below + adjusts cadence model when ready to enable.
+# */15 * * * * /usr/bin/python3 /home/eve/.local/eve-tools/pulse_outreach.py >> /home/eve/.local/eve-tools/cron-outreach.log 2>&1
+
+# ─── eve-update (auto-pull from vendor git) ─────────────────────────────────
+# Pull + apply vendor-layer updates daily at 4am (after backups complete).
+# Vendor pushes a tag/commit; this picks it up within 24h. Comment out for
+# manual-only update if customer wants tighter control.
+0 4 * * * cd /home/eve/eve-vendor-layer && ./eve-update.sh >> /home/eve/eve-vendor-layer/cron-update.log 2>&1
