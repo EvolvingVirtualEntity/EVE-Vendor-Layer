@@ -43,6 +43,8 @@ Some scripts read YAML / DB / cache files that live in the *instance layer*, not
 
 - `cadence_model.yaml` — outreach pacing + topic families (per-customer)
 - `interest_profile.yaml` — RSS sources + interests (per-customer)
+- `~/.config/eve/prompt_seed.yaml` — Eve-originated reflective prompts (per-instance personality content; see `prompt_seed.example.yaml` for schema)
+- `~/.config/eve/instance.env` — identity, team, vault path, backup config (see `instance.env.example` for schema)
 - `eve-knowledge.db` — rows are per-customer (schema is in this repo)
 - `plaud-cache/`, `plaud-state/` — runtime state (per-customer)
 - `vault-chroma/` — RAG index built from the customer's vault
@@ -88,13 +90,13 @@ Schema: `eve-tools/instance.env.example` (canonical) + `eve-tools/eve_config.py`
 | `underwrite.py` | 1 (docstring example) | ✓ sanitized — example property address genericized |
 | `vault_chat.py` | 2 (docstring examples) | ✓ sanitized — example questions genericized |
 | `vault_index.py` | 0 | ✓ clean |
-| `prompt_seed.py` | 4 (L&R-flavored story prompts) | partial — TODO comment added; full refactor (externalize PROMPTS list to YAML) deferred to a future commit |
+| `prompt_seed.py` | 4 (L&R-flavored story prompts) | ✓ refactored — PROMPTS list externalized to `~/.config/eve/prompt_seed.yaml` (customer-layer); schema in `prompt_seed.example.yaml` |
 
 Plus `bridges/sharedbrain/server.js` — Node, separate pattern (not eve_config); audit + sanitize TBD.
 
 ### Status as of 2026-05-15
 
-13 of 14 eve-tools scripts fully sanitized. `prompt_seed.py` flagged for a structural refactor (move PROMPTS data into a customer-supplied YAML) — *must complete before customer #2 onboards*. `bridges/sharedbrain/server.js` still pending its own audit.
+All 14 eve-tools scripts fully sanitized. `bridges/sharedbrain/server.js` still pending its own audit (Node, separate pattern from eve_config).
 
 Plus `bridges/sharedbrain/server.js` — separate sanitization needed (Node, not Python).
 

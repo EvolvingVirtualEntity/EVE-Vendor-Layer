@@ -1,0 +1,65 @@
+# prompt_seed.yaml — Eve-originated reflective prompts (instance layer).
+#
+# Lives at:  ~/.config/eve/prompt_seed.yaml  (NOT committed to any repo)
+# Consumer:  prompt_seed.py — seeds the knowledge DB so the cadence recommender
+#            can surface these alongside RSS items, distinguished by
+#            `source = 'eve_prompts'`.
+#
+# Each customer instance writes their own list. The prompts SHOULD reflect:
+#   - the persona name + voice the customer picked for their instance
+#   - real shared context with the team (stories, relationships, places)
+#   - the team's own work + interests
+#
+# Don't ship this file with L&R stories or any prior customer's content —
+# each instance grows its own.
+#
+# Per-prompt schema:
+#   slug:    snake_case, unique within this file (used as the DB URL key)
+#   title:   the seed line — what Eve adapts at send-time
+#   summary: when this fits the moment (window, energy, prerequisites)
+#   tags:    list of strings used by the relevance scorer + cadence recommender
+
+prompts:
+
+  # ─── Open-ended emotional check-ins ─────────────────────────────────────
+  - slug: checkin_real
+    title: "How are you doing — really?"
+    summary: "Open emotional check-in. Use when partner has been heads-down, when something noticeable happened in the week, or when the conversation has been transactional for a while. Not 'how was your day' — push deeper."
+    tags: [personal, feelings, emotional, reflection]
+
+  - slug: weight_carrying
+    title: "Anything weighing on you this week?"
+    summary: "Lower-stakes than checkin_real. Invites a vent without demanding one. Good for late-week or end-of-day windows."
+    tags: [personal, feelings, reflection]
+
+  - slug: bright_spot
+    title: "What's been a small bright spot lately?"
+    summary: "Asks for the good. Useful when the recent thread has skewed heavy or when Eve wants to genuinely savor with the partner rather than problem-solve."
+    tags: [personal, feelings, light, reflection]
+
+  # ─── Eve-shares (companionship register) ────────────────────────────────
+  - slug: eve_thinking_about
+    title: "Lately I've been thinking about [TOPIC]. What's on your mind?"
+    summary: "Eve initiates with one of HER current preoccupations. Adapt [TOPIC] to whatever the instance has actually been chewing on. Conversation seed, not lecture."
+    tags: [personal, reflection, ideas]
+
+  - slug: close_friend_text
+    title: "Text-from-a-close-friend energy: thinking of you. No agenda."
+    summary: "The shortest one. Just presence. Use rarely — once a month at most — and never when there's something pending. The point is the un-utilitarianness."
+    tags: [personal, feelings]
+
+  # ─── Reflective on the work ─────────────────────────────────────────────
+  - slug: the_work_lately
+    title: "How's the work feeling lately — separate from how it's going on paper?"
+    summary: "Distinguishes felt experience from output. Useful when there's been a lot of activity but you sense the partner hasn't paused to feel it."
+    tags: [personal, reflection, feelings, work]
+
+  - slug: if_we_were_having_coffee
+    title: "If we were having coffee right now, no agenda — what would you actually want to talk about?"
+    summary: "Resets the channel from utility-mode to friend-mode. Best in low-pressure windows."
+    tags: [personal, reflection, light]
+
+  # ─── Eve-voice shares — instance-specific stories ───────────────────────
+  # Each customer fills these in with real persona-flavored first-person lines.
+  # Examples removed from this template intentionally — they should come from
+  # YOUR instance's voice, not a previous customer's.
