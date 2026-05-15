@@ -1,0 +1,13 @@
+# Piper TTS voices pulled by install.sh.
+# Each line is a voice model name; install.sh downloads the .onnx and .onnx.json
+# from huggingface.co/rhasspy/piper-voices into ~/.local/eve-tools/piper-voices/.
+#
+# These are platform-layer defaults — every customer instance can pick any of them.
+# Each voice is ~60 MB; total ~370 MB.
+
+en_US-amy-medium
+de_DE-thorsten-medium
+en_GB-jenny_dioco-medium
+en_US-hfc_female-medium
+en_US-kathleen-low
+en_US-kristin-medium

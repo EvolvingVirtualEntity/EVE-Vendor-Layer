@@ -1,0 +1,7 @@
+# Global npm packages required for the E.V.E. platform.
+# Read by install.sh; each line installed via `npm install -g`.
+# Versions pinned to what's running on the L&R box as of 2026-05-15.
+# Bump explicitly via a new commit, not silently.
+
+@anthropic-ai/claude-code@2.1.116
+pm2@6.0.14

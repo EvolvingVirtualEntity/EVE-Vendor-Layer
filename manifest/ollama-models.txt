@@ -1,0 +1,5 @@
+# Ollama models pulled by install.sh.
+# Run on first boot via `ollama pull <model>` per line.
+# Models are ~5 GB each — install.sh streams them with progress output.
+
+qwen2.5:7b-instruct-q4_K_M
